@@ -1,0 +1,14 @@
+Index: .prettierrc
+===================================================================
+diff --git a/.prettierrc b/.prettierrc
+new file mode 100644
+--- /dev/null	(date 1778717131825)
++++ b/.prettierrc	(date 1778717131825)
+@@ -0,0 +1,7 @@
++{
++    "trailingComma": "es5",
++    "tabWidth": 4,
++    "semi": false,
++    "singleQuote": true,
++    "printWidth": 120
++}
