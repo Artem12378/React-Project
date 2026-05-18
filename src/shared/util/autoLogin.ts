@@ -1,11 +1,17 @@
 import {jwtDecode, type JwtPayload} from "jwt-decode";
 
+interface CustomJwtPayload extends JwtPayload {
+    username: string;
+}
+
 export const autoLogin = () => {
     const token = localStorage.getItem("access_token");
     if(!token) return null
     if(token){
         try{
-            const decodedToken = jwtDecode<JwtPayload & { username:string }>(token)
+            const decodedToken = jwtDecode<CustomJwtPayload>(token)
+
+
             if(decodedToken.exp && decodedToken.exp *1000 >= Date.now() ) {
                 return {
                     username:decodedToken.username,

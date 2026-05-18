@@ -24,9 +24,8 @@ import {SnackbarProvider} from "notistack";
 
 function App() {
 
-    const userFromLS = autoLogin()
 
-    const [user, setUser ] = useState<UserType | null>(userFromLS)
+    const [user, setUser ] = useState<UserType | null>(autoLogin())
     const { mode, setMode } = useColorScheme();
     if (!mode) {
         return null;

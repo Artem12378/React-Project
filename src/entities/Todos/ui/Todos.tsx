@@ -2,24 +2,66 @@
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import {Card, Checkbox, Stack} from "@mui/material";
+import {Button, Card, Checkbox, Stack} from "@mui/material";
 import type {TodoType} from "../model/todoType.ts";
 import {mockTodos} from "../model/mockTodos.tsx";
 import {useState} from "react";
+import TextField from "@mui/material/TextField";
+
 
 type TodoProps = {
     todo: TodoType;
     setTodo: (todo: TodoType) => void;
+    changeTodoTitle:(todo: TodoType, title: string) => void;
+    changeTodoDescription:(todo: TodoType, todoDescription: string) => void;
+
 }
-const Todo = ({todo,setTodo}:TodoProps) => {
+const Todo = ({todo,setTodo,changeTodoTitle}:TodoProps) => {
+
+    const [isEditing, setIsEditing] = useState(false);
+    const [editTitle, setEditTitle] = useState(todo.title);
+
     const handleCheckClick = () => {
         setTodo({...todo, completed:!todo.completed})
     }
+
+    const handlerChangeTodoTitle = () => {
+        const titleValue = editTitle ?? '';
+        setEditTitle(titleValue)
+        changeTodoTitle(todo,titleValue)
+        setIsEditing(false);
+    }
+
+    const handlerChangeTodoDescription = () => {
+
+    }
     return <Card variant="outlined" sx={{maxWidth: 200}}>
         <CardContent>
-            <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-                {todo.title}
-            </Typography>
+            {isEditing ? (
+              <>
+                  <TextField
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      autoFocus
+                      size="small"
+                      fullWidth
+                  />
+                  <Button onClick ={handlerChangeTodoTitle} color='secondary'>Редактировать</Button>
+              </>
+            ) : (
+                <Typography
+                    onDoubleClick={() => setIsEditing(true)}
+                    gutterBottom
+                    sx={{
+                        color: 'text.secondary',
+                        fontSize: 14,
+                        cursor: 'pointer'
+                    }}
+                >
+                    {todo.title}
+
+                </Typography>
+            )}
             <Typography variant="body2">
                 {todo.description}
             </Typography>
@@ -47,12 +89,29 @@ const Todos = () => {
         setTodos(updateTodos);
     }
 
+    const changeTodoTitle = (todo:TodoType,title:string) => {
+        const changeTodo = todos.map((changeTodo) => {
+            return changeTodo.id === todo.id ? {...todo, title:title} : changeTodo
+        })
+        setTodos(changeTodo);
+    }
+
+    const changeTodoDescription = (todo:TodoType,titleDescription:string) => {
+        const changeTodo = todos.map((changeTodo) => {
+            return changeTodo.id === todo.id ? {...todo, description:titleDescription} : changeTodo
+        })
+        setTodos(changeTodo);
+    }
 
     return (
         <Stack direction="row" spacing={2}>
 
                 {todos.map((el)=> {
-                    return <Todo todo={el} key={el.id} setTodo={setTodo}/>
+                    return <Todo todo={el}
+                                 key={el.id}
+                                 setTodo={setTodo}
+                                 changeTodoDescription={changeTodoDescription}
+                                 changeTodoTitle={changeTodoTitle} />
                 })}
 
         </Stack>
