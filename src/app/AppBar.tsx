@@ -3,6 +3,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import {useState} from "react";
+import {useTodosStore} from "../entities/Todos/model/Store/useTodosStore.ts";
 
 
 
@@ -12,6 +13,9 @@ const AppBar = (props:{
 }) => {
 
     const [open, setOpen] = useState(false);
+    const todos = useTodosStore((state) => state.todos);
+    const unDoneTodos = todos.filter(el => !el.completed)
+
 
     const toggleDrawer = (openState: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
@@ -50,6 +54,9 @@ const AppBar = (props:{
     return (
         <MuiAppBar position="fixed">
             <Toolbar>
+                <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                    Todos{' '+unDoneTodos.length}
+                </Typography>
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     My App
                 </Typography>

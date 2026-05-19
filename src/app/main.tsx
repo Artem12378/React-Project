@@ -1,10 +1,10 @@
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import '../index.css'
 import App from './App.tsx'
 import { ThemeProvider } from '@mui/material/styles'
 
 import CssBaseline from '@mui/material/CssBaseline'
-import {theme} from "./theme.ts";
+import {theme} from "../theme.ts";
 
 createRoot(document.getElementById('root')!).render(
     <ThemeProvider theme={theme}>

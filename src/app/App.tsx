@@ -7,16 +7,16 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { useColorScheme } from '@mui/material/styles';
-import './App.css'
+import '../App.css'
 import { useState} from "react";
 import IconButton from '@mui/material/IconButton';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import AppBar from "./entities/User/ui/AppBar.tsx";
-import Auth from "./entities/User/ui/Auth.tsx";
-import type {UserType} from "./entities/User/model/UserType.ts";
-import Todos from "./entities/Todos/ui/Todos.tsx";
-import {autoLogin} from "./shared/util/autoLogin.ts";
+import AppBar from "./AppBar.tsx";
+import Auth from "../entities/User/ui/Auth.tsx";
+import type {UserType} from "../entities/User/model/UserType.ts";
+import Todos from "../entities/Todos/ui/Todos.tsx";
+import {autoLogin} from "../shared/util/autoLogin.ts";
 import {SnackbarProvider} from "notistack";
 
 //import {jwtDecode} from "jwt-decode";
