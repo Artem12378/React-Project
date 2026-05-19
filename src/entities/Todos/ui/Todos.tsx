@@ -7,6 +7,7 @@ import type {TodoType} from "../model/todoType.ts";
 import {mockTodos} from "../model/mockTodos.tsx";
 import {useState} from "react";
 import TextField from "@mui/material/TextField";
+import {enqueueSnackbar} from "notistack";
 
 
 type TodoProps = {
@@ -16,10 +17,15 @@ type TodoProps = {
     changeTodoDescription:(todo: TodoType, todoDescription: string) => void;
 
 }
-const Todo = ({todo,setTodo,changeTodoTitle}:TodoProps) => {
+const Todo = ({todo,setTodo,changeTodoTitle,changeTodoDescription}:TodoProps) => {
+    const todoDataCreate  = new Date(todo.createdAt).toLocaleString()
+    const todoDataUpdate  = new Date(todo.updatedAt).toLocaleString()
 
     const [isEditing, setIsEditing] = useState(false);
+    const [isEditingDescr, setIsEditingDescr] = useState(false);
     const [editTitle, setEditTitle] = useState(todo.title);
+    const [editDescr, setEditDescr] = useState(todo.description);
+    const [updateData, setUpdateData] = useState(todoDataUpdate);
 
     const handleCheckClick = () => {
         setTodo({...todo, completed:!todo.completed})
@@ -30,11 +36,20 @@ const Todo = ({todo,setTodo,changeTodoTitle}:TodoProps) => {
         setEditTitle(titleValue)
         changeTodoTitle(todo,titleValue)
         setIsEditing(false);
+
     }
 
     const handlerChangeTodoDescription = () => {
-
+        const descrValue = editDescr ?? '';
+        setEditDescr(descrValue)
+        changeTodoDescription(todo,descrValue)
+        setIsEditingDescr(false);
+        setUpdateData(new Date().toLocaleString())
+        enqueueSnackbar('Todos edited', {
+            variant: 'success',
+        })
     }
+
     return <Card variant="outlined" sx={{maxWidth: 200}}>
         <CardContent>
             {isEditing ? (
@@ -62,14 +77,41 @@ const Todo = ({todo,setTodo,changeTodoTitle}:TodoProps) => {
 
                 </Typography>
             )}
-            <Typography variant="body2">
-                {todo.description}
-            </Typography>
+
+            {isEditingDescr ? (
+                <>
+                    <TextField
+                        value={editDescr}
+                        onChange={(e) => setEditDescr(e.target.value)}
+                        autoFocus
+                        size="small"
+                        fullWidth
+                    />
+                    <Button onClick ={handlerChangeTodoDescription} color='secondary'>Редактировать</Button>
+                </>
+            ) : (
+                <Typography variant="body2"
+                            onDoubleClick={() => setIsEditingDescr(true)}
+                >
+                    {todo.description}
+                </Typography>
+            )}
+
         </CardContent>
         <CardActions>
             <Checkbox onClick={handleCheckClick}
                       checked={todo.completed}/>
         </CardActions>
+        <Typography variant="body2"
+        >
+            Дата создания:{<br/>}
+            {todoDataCreate}
+        </Typography>
+        <Typography variant="body2"
+        >
+            Дата изменениея:{<br/>}
+            {updateData}
+        </Typography>
        </Card>
 }
 

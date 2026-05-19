@@ -5,9 +5,7 @@
     import AccountCircle from '@mui/icons-material/AccountCircle';
     import {type ChangeEvent, useId, useState} from "react";
     import type {UserType} from "../model/UserType.ts";
-    import {rootApi} from "../../../shared/api/rootApi.ts";
-    import { useSnackbar } from 'notistack'
-    import type {AxiosError} from "axios";
+    import {useUserApi} from "../api/useUserApi.ts";
 
 
     export type AuthProps = {
@@ -16,59 +14,15 @@
 
 
     const Auth = (props:AuthProps) => {
-        const { enqueueSnackbar } = useSnackbar()
+
 
         const textFieldId = useId();
         const [email, setEmail] = useState('');
         const [password, setPassword] = useState('');
         const [LoginFormName, setLoginFormName] = useState('Login');
-        //const [Loading, setLoading] = useState(false);
+        //const [Loading, setLoading] = useState(false);q
 
-        const handleLogin = async () => {
-            try{
-                const LoginData = await rootApi.post<UserType>
-                ('auth/login',
-                    {username:email, password});
-
-                const token = LoginData.data.access_token
-                localStorage.setItem('access_token', token)
-                props.UserPropsCallback(LoginData.data);
-                enqueueSnackbar('Welcome', {
-                    variant: 'success',
-                })
-            }
-            catch (error){
-                console.error(error);
-                const axiosEror = error as AxiosError<{message:string}>;
-                enqueueSnackbar(axiosEror.response?.data.message || 'Unknown error', {
-                    variant: 'error',
-                })
-            }
-
-
-        }
-
-        const handleRegister = async () => {
-
-            try{
-                const RegisterData = await rootApi.post<UserType>
-                ('auth/register',
-                    {username:email, password});
-                const token = RegisterData.data.access_token
-                localStorage.setItem('access_token', token)
-                props.UserPropsCallback(RegisterData.data);
-                enqueueSnackbar('Welcome', {
-                    variant: 'success',
-                })
-            }
-            catch (error){
-                console.error(error);
-                const axiosEror = error as AxiosError<{message:string}>;
-                enqueueSnackbar(axiosEror.response?.data.message || 'Unknown error', {
-                    variant: 'error',
-                })
-            }
-        }
+        const { handleLogin, handleRegister } = useUserApi(props.UserPropsCallback);
 
         const handleClick = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement > ) => {
             setEmail(e.target.value)
@@ -138,7 +92,7 @@
                                    variant="standard"
                         />
 
-                        <Button variant="contained" onClick={handleLogin} >Login</Button>
+                        <Button onClick={() => handleLogin(email, password)} >Login</Button>
                     </Stack>
                     : <Stack spacing={2}>
 
@@ -176,7 +130,7 @@
                                    variant="standard"
                         />
 
-                        <Button variant="contained" onClick={handleRegister} >Register</Button>
+                        <Button variant="contained" onClick={()=>handleRegister(email, password)} >Register</Button>
                     </Stack>
                 }
             </Container>

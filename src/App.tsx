@@ -37,10 +37,16 @@ function App() {
         setUser(user)
     }
 
+    const logOut = () => {
+        localStorage.removeItem('access_token');
+        setUser(null)
+    }
+
     return (
         <SnackbarProvider>
             <>
                 <AppBar
+                    logOut={logOut}
                     username={user?.username} />
                 <div style={{paddingTop:'55px'}} ></div>
                 <IconButton onClick={toggleColorMode} color="inherit">
