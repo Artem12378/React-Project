@@ -6,15 +6,19 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import CardActions from "@mui/material/CardActions";
 import type {TodoType} from "../model/todoType";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 type TodoProps = {
     todo: TodoType;
     setTodo?: (todo: TodoType) => void;
-    changeTodoTitle?: (todo: TodoType, title: string) => void;
-    changeTodoDescription?: (todo: TodoType, todoDescription: string) => void;
-
+    changeTodoTitle: (todo: TodoType['id'], title: string) => void;
+    changeTodoDescription: (todo: TodoType["id"], todoDescription: string) => void;
+    updateTodosCompleted:(id:TodoType['id'],completed:boolean) => void;
+    deleteTodo:(id:TodoType['id']) => void;
 }
-export const Todo = ({todo, setTodo, changeTodoTitle, changeTodoDescription}: TodoProps) => {
+export const Todo = ({todo,deleteTodo, updateTodosCompleted, changeTodoTitle, changeTodoDescription}: TodoProps) => {
     const todoDataCreate = new Date(todo.createdAt).toLocaleString()
     const todoDataUpdate = new Date(todo.updatedAt).toLocaleString()
 
@@ -22,19 +26,22 @@ export const Todo = ({todo, setTodo, changeTodoTitle, changeTodoDescription}: To
 
     const [isEditing, setIsEditing] = useState(false);
     const [isEditingDescr, setIsEditingDescr] = useState(false);
+
     const [editTitle, setEditTitle] = useState(todo.title);
     const [editDescr, setEditDescr] = useState(todo.description);
+
     const [updateData, setUpdateData] = useState(todoDataUpdate);
 
 
     const handleCheckClick = () => {
-        setTodo?.({...todo, completed: !todo.completed})
+        //setTodo({...todo, completed: !todo.completed})
+        updateTodosCompleted(todo.id, todo.completed)
     }
 
     const handlerChangeTodoTitle = () => {
         const titleValue = editTitle ?? '';
         setEditTitle(titleValue)
-        changeTodoTitle?.(todo, titleValue)
+        changeTodoTitle(todo['id'], titleValue)
         setIsEditing(false);
 
     }
@@ -42,7 +49,7 @@ export const Todo = ({todo, setTodo, changeTodoTitle, changeTodoDescription}: To
     const handlerChangeTodoDescription = () => {
         const descrValue = editDescr ?? '';
         setEditDescr(descrValue)
-        changeTodoDescription?.(todo, descrValue)
+        changeTodoDescription(todo.id, descrValue)
         setIsEditingDescr(false);
         setUpdateData(new Date().toLocaleString())
         enqueueSnackbar('Todos edited', {
@@ -50,9 +57,21 @@ export const Todo = ({todo, setTodo, changeTodoTitle, changeTodoDescription}: To
         })
     }
 
+    const handlerDeleteTodo = () => {
+        deleteTodo(todo.id)
+    }
 
 
-    return (<Card variant="outlined" sx={{maxWidth: 200}}>
+
+    return (<Card variant="outlined" sx={{maxWidth: 200,position: 'relative'}}>
+            <IconButton
+                sx={{ position: 'absolute', bottom: 8, right: 8 }}
+                onClick={handlerDeleteTodo}
+                size="small"
+            >
+                <DeleteIcon fontSize="small" onClick={handlerDeleteTodo}/>
+            </IconButton>
+
         <CardContent>
 
             {isEditing ? (
@@ -105,6 +124,7 @@ export const Todo = ({todo, setTodo, changeTodoTitle, changeTodoDescription}: To
             <Checkbox onClick={handleCheckClick}
                       checked={todo.completed}/>
         </CardActions>
+
         <Typography variant="body2"
         >
             Дата создания:{<br/>}

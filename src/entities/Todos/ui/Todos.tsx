@@ -13,6 +13,14 @@ const Todos = () => {
 
     const setTodos = useTodosStore((state) => state.setTodos)
 
+    const updateTodosTitle = useTodosStore((state) => state.updateTodoTitle)
+
+    const updateTodosDescription = useTodosStore((state) => state.changeTodoDescription)
+
+    const updateTodosCompleted = useTodosStore((state) => state.changeTodoCompleted)
+
+    const deleteTodo = useTodosStore((state) => state.deleteTodo)
+
     const [newTodoTitle, setNewTodoTitle] = useState("")
     const [newTodoDescription, setNewTodoDescription] = useState("")
 
@@ -26,19 +34,17 @@ const Todos = () => {
         setTodos(updateTodos);
     }
 
-    // const changeTodoTitle = (todo:TodoType,title:string) => {
-    //     const changeTodo = todos.map((changeTodo) => {
-    //         return changeTodo.id === todo.id ? {...todo, title:title} : changeTodo
-    //     })
-    //     setTodos(changeTodo);
-    // }
+    const deleteTodoHandler = (todo:string)=>{
+        deleteTodo(todo)
+    }
 
-    // const changeTodoDescription = (todo:TodoType,titleDescription:string) => {
-    //     const changeTodo = todos.map((changeTodo) => {
-    //         return changeTodo.id === todo.id ? {...todo, description:titleDescription} : changeTodo
-    //     })
-    //     setTodos(changeTodo);
-    // }
+    const changeTodoTitle = (todo:TodoType["id"],title:string) => {
+        updateTodosTitle(todo,title);
+    }
+
+    const changeTodoDescription = (todo:TodoType["id"],titleDescription:string) => {
+        updateTodosDescription(todo,titleDescription);
+    }
     const handleAddTodo = () => {
         if (!newTodoTitle) return
         const newTodo:TodoType = {
@@ -71,9 +77,11 @@ const Todos = () => {
                 {todos.map((el)=> {
                     return <Todo todo={el}
                                  key={el.id}
+                                 updateTodosCompleted={updateTodosCompleted}
                                  setTodo={setTodo}
-                        //             changeTodoDescription={changeTodoDescription}
-                        //             changeTodoTitle={changeTodoTitle}
+                                 changeTodoDescription={changeTodoDescription}
+                                 changeTodoTitle={changeTodoTitle}
+                                 deleteTodo={deleteTodoHandler}
                     />
                 })}
 
