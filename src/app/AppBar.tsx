@@ -2,15 +2,18 @@ import {AppBar as MuiAppBar, Toolbar, Typography, Button, Avatar, Tooltip, Drawe
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {useTodosStore} from "../entities/Todos/model/Store/useTodosStore.ts";
+import {UserContext} from "../entities/User/model/UserContext.tsx";
 
 
 
 const AppBar = (props:{
-    username?: string,
+
     logOut:()=>void
 }) => {
+    const {user} = useContext(UserContext)
+    const username = user?.username
 
     const [open, setOpen] = useState(false);
     const todos = useTodosStore((state) => state.todos);
@@ -50,7 +53,7 @@ const AppBar = (props:{
     );
 
 
-    const { username} = props
+
     return (
         <MuiAppBar position="fixed">
             <Toolbar>

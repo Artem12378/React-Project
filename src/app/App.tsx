@@ -8,7 +8,6 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { useColorScheme } from '@mui/material/styles';
 import '../App.css'
-import { useState} from "react";
 import IconButton from '@mui/material/IconButton';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -16,16 +15,17 @@ import AppBar from "./AppBar.tsx";
 import Auth from "../entities/User/ui/Auth.tsx";
 import type {UserType} from "../entities/User/model/UserType.ts";
 import Todos from "../entities/Todos/ui/Todos.tsx";
-import {autoLogin} from "../shared/util/autoLogin.ts";
 import {SnackbarProvider} from "notistack";
+import { useUserStore} from "../entities/User/model/UserContext.tsx";
 
 //import {jwtDecode} from "jwt-decode";
 
 
 function App() {
 
+    const {user,setUser} = useUserStore()
 
-    const [user, setUser ] = useState<UserType | null>(autoLogin())
+
     const { mode, setMode } = useColorScheme();
     if (!mode) {
         return null;
@@ -33,13 +33,13 @@ function App() {
     const toggleColorMode = () => {
         setMode(mode === 'light' ? 'dark' : 'light');
     };
-    const UserPropsCallback = (user: UserType | null) => {
+    const UserPropsCallback = (user: UserType | undefined) => {
         setUser(user)
     }
 
     const logOut = () => {
         localStorage.removeItem('access_token');
-        setUser(null)
+        setUser(undefined)
     }
 
     return (
@@ -47,7 +47,7 @@ function App() {
             <>
                 <AppBar
                     logOut={logOut}
-                    username={user?.username} />
+                     />
                 <div style={{paddingTop:'55px'}} ></div>
                 <IconButton onClick={toggleColorMode} color="inherit">
                     {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}

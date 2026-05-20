@@ -9,7 +9,7 @@
 
 
     export type AuthProps = {
-        UserPropsCallback: (user: UserType | null) => void;
+        UserPropsCallback: (user: UserType | undefined) => void;
     }
 
 

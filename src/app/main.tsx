@@ -5,10 +5,14 @@ import { ThemeProvider } from '@mui/material/styles'
 
 import CssBaseline from '@mui/material/CssBaseline'
 import {theme} from "../theme.ts";
+import {UserProvider} from "../entities/User/model/UserProvider.tsx";
 
 createRoot(document.getElementById('root')!).render(
-    <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <App />
-    </ThemeProvider>
+    <UserProvider>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <App />
+        </ThemeProvider>
+    </UserProvider>
+
 )

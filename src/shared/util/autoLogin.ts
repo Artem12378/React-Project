@@ -6,7 +6,7 @@ interface CustomJwtPayload extends JwtPayload {
 
 export const autoLogin = () => {
     const token = localStorage.getItem("access_token");
-    if(!token) return null
+    if(!token) return undefined
     if(token){
         try{
             const decodedToken = jwtDecode<CustomJwtPayload>(token)
@@ -19,13 +19,13 @@ export const autoLogin = () => {
                          }
             }
             localStorage.removeItem("access_token");
-            return null
+            return undefined
         }
         catch(error){
             console.error(error)
             localStorage.removeItem("access_token");
-            return  null
+            return  undefined
         }
     }
-    return null
+    return undefined
 }

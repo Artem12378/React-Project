@@ -6,7 +6,7 @@ import {useSnackbar} from "notistack";
 
 
 
-export const useUserApi = (userPropsCallback: (user: UserType | null) => void) => {
+export const useUserApi = (userPropsCallback: (user: UserType | undefined) => void) => {
 
     const { enqueueSnackbar } = useSnackbar();
     const handleLogin = async (email: string, password: string) => {
