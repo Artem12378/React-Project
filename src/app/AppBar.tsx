@@ -2,22 +2,21 @@ import {AppBar as MuiAppBar, Toolbar, Typography, Button, Avatar, Tooltip, Drawe
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import {useContext, useState} from "react";
-import {useTodosStore} from "../entities/Todos/model/Store/useTodosStore.ts";
-import {UserContext} from "../entities/User/model/UserContext.tsx";
+import { useState} from "react";
+import {useAppDispatch, useAppSelector} from "./store.ts";
+import {logOutUser, selectUser} from "../entities/User/model/store/userStore.ts";
 
 
 
-const AppBar = (props:{
+const AppBar = () => {
+    const user = useAppSelector(selectUser)
 
-    logOut:()=>void
-}) => {
-    const {user} = useContext(UserContext)
     const username = user?.username
+    const dispatch = useAppDispatch();
 
     const [open, setOpen] = useState(false);
-    const todos = useTodosStore((state) => state.todos);
-    const unDoneTodos = todos.filter(el => !el.completed)
+    //const todos = useTodosStore((state) => state.todos);
+    //const unDoneTodos = todos.filter(el => !el.completed)
 
 
     const toggleDrawer = (openState: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -31,7 +30,8 @@ const AppBar = (props:{
 
     const handleLogout = (text: string) => {
         if (text === 'Выход') {
-            props.logOut();  // вызываем logout только для "Выход"
+            localStorage.removeItem('access_token');
+            dispatch(logOutUser());  // вызываем logout только для "Выход"
         }
         setOpen(false);
     }
@@ -58,7 +58,7 @@ const AppBar = (props:{
         <MuiAppBar position="fixed">
             <Toolbar>
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                    Todos{' '+unDoneTodos.length}
+                    Todos{' '  } {/*unDoneTodos?.length*/ }
                 </Typography>
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     My App

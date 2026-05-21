@@ -1,50 +1,35 @@
 import {Button, Container, Input, Stack} from "@mui/material";
-import {useTodosStore} from "../model/Store/useTodosStore.ts";
 import {Todo} from "./Todo";
 import {useState} from "react";
 import type {TodoType} from "../model/todoType.ts";
+import {useAppDispatch, useAppSelector} from "../../../app/store.ts";
+import {addTodo, selectTodos, updateTodoTitle,updateTodosDescription ,deleteTodo} from "../model/Store/todosStore.ts";
 
 
 const Todos = () => {
 
-    //const [todos, setTodos] = useState<TodoType[]>(mockTodos);
-    const todos = useTodosStore((state) => state.todos);
-    const addTodos = useTodosStore((state) => state.addTodo)
 
-    const setTodos = useTodosStore((state) => state.setTodos)
 
-    const updateTodosTitle = useTodosStore((state) => state.updateTodoTitle)
+    const dispatch = useAppDispatch();
+    const todos = useAppSelector(selectTodos);
 
-    const updateTodosDescription = useTodosStore((state) => state.changeTodoDescription)
-
-    const updateTodosCompleted = useTodosStore((state) => state.changeTodoCompleted)
-
-    const deleteTodo = useTodosStore((state) => state.deleteTodo)
 
     const [newTodoTitle, setNewTodoTitle] = useState("")
     const [newTodoDescription, setNewTodoDescription] = useState("")
 
-    const setTodo = (todo:TodoType) => {
-        const updateTodos = todos.map((el) => {
-            if(el.id === todo.id){
-                return todo
-            }
-            return  el
-        })
-        setTodos(updateTodos);
-    }
+
 
     const deleteTodoHandler = (todo:string)=>{
-        deleteTodo(todo)
+        dispatch(deleteTodo({id:todo}))
     }
 
-    const changeTodoTitle = (todo:TodoType["id"],title:string) => {
-        updateTodosTitle(todo,title);
+    const changeTodoTitle = (todoId:TodoType["id"],title:string) => {
+        dispatch(updateTodoTitle({id:todoId, title}));
     }
 
-    const changeTodoDescription = (todo:TodoType["id"],titleDescription:string) => {
-        updateTodosDescription(todo,titleDescription);
-    }
+    const changeTodoDescription = (todoId: string, description: string) => {
+        dispatch(updateTodosDescription({ id: todoId, description }));
+    };
     const handleAddTodo = () => {
         if (!newTodoTitle) return
         const newTodo:TodoType = {
@@ -56,7 +41,7 @@ const Todos = () => {
             updatedAt:new Date().toString(),
             order: todos.length + 1
         }
-        addTodos(newTodo);
+        dispatch(addTodo(newTodo));
         setNewTodoTitle('');
         setNewTodoDescription('');
     }
@@ -77,8 +62,6 @@ const Todos = () => {
                 {todos.map((el)=> {
                     return <Todo todo={el}
                                  key={el.id}
-                                 updateTodosCompleted={updateTodosCompleted}
-                                 setTodo={setTodo}
                                  changeTodoDescription={changeTodoDescription}
                                  changeTodoTitle={changeTodoTitle}
                                  deleteTodo={deleteTodoHandler}

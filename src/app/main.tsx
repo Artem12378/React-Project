@@ -5,14 +5,16 @@ import { ThemeProvider } from '@mui/material/styles'
 
 import CssBaseline from '@mui/material/CssBaseline'
 import {theme} from "../theme.ts";
-import {UserProvider} from "../entities/User/model/UserProvider.tsx";
+import {Provider} from "react-redux";
+import store from "./store.ts";
 
 createRoot(document.getElementById('root')!).render(
-    <UserProvider>
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <App />
-        </ThemeProvider>
-    </UserProvider>
+       <Provider store={store}>
+           <ThemeProvider theme={theme}>
+               <CssBaseline />
+               <App />
+           </ThemeProvider>
+       </Provider>
+
 
 )

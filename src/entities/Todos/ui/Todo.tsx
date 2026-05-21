@@ -8,6 +8,8 @@ import CardActions from "@mui/material/CardActions";
 import type {TodoType} from "../model/todoType";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import {useAppDispatch} from "../../../app/store.ts";
+import {changeTodoCompleted} from "../model/Store/todosStore.ts";
 
 
 type TodoProps = {
@@ -15,10 +17,11 @@ type TodoProps = {
     setTodo?: (todo: TodoType) => void;
     changeTodoTitle: (todo: TodoType['id'], title: string) => void;
     changeTodoDescription: (todo: TodoType["id"], todoDescription: string) => void;
-    updateTodosCompleted:(id:TodoType['id'],completed:boolean) => void;
     deleteTodo:(id:TodoType['id']) => void;
 }
-export const Todo = ({todo,deleteTodo, updateTodosCompleted, changeTodoTitle, changeTodoDescription}: TodoProps) => {
+export const Todo = ({todo,deleteTodo, changeTodoTitle, changeTodoDescription}: TodoProps) => {
+    const dispatch = useAppDispatch();
+
     const todoDataCreate = new Date(todo.createdAt).toLocaleString()
     const todoDataUpdate = new Date(todo.updatedAt).toLocaleString()
 
@@ -35,7 +38,7 @@ export const Todo = ({todo,deleteTodo, updateTodosCompleted, changeTodoTitle, ch
 
     const handleCheckClick = () => {
         //setTodo({...todo, completed: !todo.completed})
-        updateTodosCompleted(todo.id, todo.completed)
+        dispatch(changeTodoCompleted({id:todo.id, completed:todo.completed}))
     }
 
     const handlerChangeTodoTitle = () => {

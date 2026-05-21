@@ -13,18 +13,27 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import AppBar from "./AppBar.tsx";
 import Auth from "../entities/User/ui/Auth.tsx";
-import type {UserType} from "../entities/User/model/UserType.ts";
 import Todos from "../entities/Todos/ui/Todos.tsx";
 import {SnackbarProvider} from "notistack";
-import { useUserStore} from "../entities/User/model/UserContext.tsx";
+import {logUser, selectUser,} from "../entities/User/model/store/userStore.ts";
+import {useAppDispatch, useAppSelector} from "./store.ts";
+import {useEffect} from "react";
+import {autoLogin} from "../shared/util/autoLogin.ts";
 
-//import {jwtDecode} from "jwt-decode";
+
 
 
 function App() {
 
-    const {user,setUser} = useUserStore()
+    const dispatch = useAppDispatch();
+    const user = useAppSelector(selectUser)
 
+    useEffect(() => {
+        const userFromToken = autoLogin();
+        if (userFromToken) {
+            dispatch(logUser(userFromToken));
+        }
+    }, [dispatch]);
 
     const { mode, setMode } = useColorScheme();
     if (!mode) {
@@ -33,27 +42,20 @@ function App() {
     const toggleColorMode = () => {
         setMode(mode === 'light' ? 'dark' : 'light');
     };
-    const UserPropsCallback = (user: UserType | undefined) => {
-        setUser(user)
-    }
 
-    const logOut = () => {
-        localStorage.removeItem('access_token');
-        setUser(undefined)
-    }
+
+
 
     return (
         <SnackbarProvider>
             <>
-                <AppBar
-                    logOut={logOut}
-                     />
+                <AppBar  />
                 <div style={{paddingTop:'55px'}} ></div>
                 <IconButton onClick={toggleColorMode} color="inherit">
                     {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
                 </IconButton>
                 <Box sx={{ marginTop: '100px' }}></Box>
-                {user ? <Todos/> : <Auth UserPropsCallback={UserPropsCallback}/>}
+                {user ? <Todos/> : <Auth />}
             </>
         </SnackbarProvider>
 

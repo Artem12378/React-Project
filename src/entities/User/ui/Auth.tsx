@@ -4,17 +4,16 @@
     import InputAdornment from '@mui/material/InputAdornment';
     import AccountCircle from '@mui/icons-material/AccountCircle';
     import {type ChangeEvent, useId, useState} from "react";
-    import type {UserType} from "../model/UserType.ts";
     import {useUserApi} from "../api/useUserApi.ts";
+    import {selectIsLoading} from "../model/store/userStore.ts";
+    import {useAppSelector} from "../../../app/store.ts";
 
 
-    export type AuthProps = {
-        UserPropsCallback: (user: UserType | undefined) => void;
-    }
 
 
-    const Auth = (props:AuthProps) => {
 
+    const Auth = () => {
+        const loading = useAppSelector(selectIsLoading);
 
         const textFieldId = useId();
         const [email, setEmail] = useState('');
@@ -22,7 +21,7 @@
         const [LoginFormName, setLoginFormName] = useState('Login');
         //const [Loading, setLoading] = useState(false);q
 
-        const { handleLogin, handleRegister } = useUserApi(props.UserPropsCallback);
+        const { handleLogin, handleRegister } = useUserApi();
 
         const handleClick = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement > ) => {
             setEmail(e.target.value)
@@ -92,7 +91,7 @@
                                    variant="standard"
                         />
 
-                        <Button onClick={() => handleLogin(email, password)} >Login</Button>
+                        <Button onClick={() => handleLogin(email, password)} disabled={loading}  >Login</Button>
                     </Stack>
                     : <Stack spacing={2}>
 
