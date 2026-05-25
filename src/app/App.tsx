@@ -11,29 +11,19 @@ import '../App.css'
 import IconButton from '@mui/material/IconButton';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import AppBar from "./AppBar.tsx";
-import Auth from "../entities/User/ui/Auth.tsx";
 import Todos from "../entities/Todos/ui/Todos.tsx";
 import {SnackbarProvider} from "notistack";
-import {logUser, selectUser,} from "../entities/User/model/store/userStore.ts";
-import {useAppDispatch, useAppSelector} from "./store.ts";
-import {useEffect} from "react";
-import {autoLogin} from "../shared/util/autoLogin.ts";
+import { selectUser,} from "../entities/User/model/store/userStore.ts";
+import {useAppSelector} from "./store.ts";
+import {Navigate} from "react-router";
 
 
 
 
 function App() {
 
-    const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser)
 
-    useEffect(() => {
-        const userFromToken = autoLogin();
-        if (userFromToken) {
-            dispatch(logUser(userFromToken));
-        }
-    }, [dispatch]);
 
     const { mode, setMode } = useColorScheme();
     if (!mode) {
@@ -44,18 +34,18 @@ function App() {
     };
 
 
-
+    if (!user) {
+        return <Navigate to="/auth" replace />;
+    }
 
     return (
         <SnackbarProvider>
             <>
-                <AppBar  />
-                <div style={{paddingTop:'55px'}} ></div>
                 <IconButton onClick={toggleColorMode} color="inherit">
                     {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
                 </IconButton>
                 <Box sx={{ marginTop: '100px' }}></Box>
-                {user ? <Todos/> : <Auth />}
+                <Todos/>
             </>
         </SnackbarProvider>
 

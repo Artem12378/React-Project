@@ -12,6 +12,7 @@ export const useUserApi = () => {
 
     const dispatch = useAppDispatch()
 
+
     const { enqueueSnackbar } = useSnackbar();
     const handleLogin = async (email: string, password: string) => {
         dispatch(setIsLoading(true));
@@ -28,6 +29,7 @@ export const useUserApi = () => {
             enqueueSnackbar('Welcome', {
                 variant: 'success',
             })
+            return true
         }
         catch (error){
             console.error(error);
@@ -35,6 +37,7 @@ export const useUserApi = () => {
             enqueueSnackbar(axiosEror.response?.data.message || 'Unknown error', {
                 variant: 'error',
             })
+            return false
         }
         finally{
             dispatch(setIsLoading(false));
@@ -56,6 +59,7 @@ export const useUserApi = () => {
             enqueueSnackbar('Welcome', {
                 variant: 'success',
             })
+            return true
         }
         catch (error){
             console.error(error);
@@ -63,6 +67,7 @@ export const useUserApi = () => {
             enqueueSnackbar(axiosEror.response?.data.message || 'Unknown error', {
                 variant: 'error',
             })
+            return false
         }
         finally{
             dispatch(setIsLoading(false));

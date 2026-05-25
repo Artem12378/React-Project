@@ -3,7 +3,7 @@ import type {UserType} from "../UserType.ts";
 
 
 export type UserStoreType = {
-    user:null | UserType;
+    user:UserType | null;
     isLoading: boolean;
 }
 

@@ -5,8 +5,9 @@
     import AccountCircle from '@mui/icons-material/AccountCircle';
     import {type ChangeEvent, useId, useState} from "react";
     import {useUserApi} from "../api/useUserApi.ts";
-    import {selectIsLoading} from "../model/store/userStore.ts";
+    import {selectIsLoading, selectUser} from "../model/store/userStore.ts";
     import {useAppSelector} from "../../../app/store.ts";
+    import {Navigate, useNavigate} from "react-router";
 
 
 
@@ -15,13 +16,17 @@
     const Auth = () => {
         const loading = useAppSelector(selectIsLoading);
 
+        const user = useAppSelector(selectUser); // импортируй selectUser
+        const navigate = useNavigate();
+
+
         const textFieldId = useId();
         const [email, setEmail] = useState('');
         const [password, setPassword] = useState('');
         const [LoginFormName, setLoginFormName] = useState('Login');
         //const [Loading, setLoading] = useState(false);q
 
-        const { handleLogin, handleRegister } = useUserApi();
+
 
         const handleClick = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement > ) => {
             setEmail(e.target.value)
@@ -38,7 +43,21 @@
             setLoginFormName(newAlignment);
         };
 
+        const { handleLogin, handleRegister } = useUserApi();
 
+        if (user) {
+            return <Navigate to="/" replace />;
+        }
+
+        const onLogin = async () => {
+            const success = await handleLogin(email, password);
+            if (success) navigate('/');
+        };
+
+        const onRegister = async () => {
+            const success = await handleRegister(email, password);
+            if (success) navigate('/');
+        };
 
         return (
             <Container maxWidth={"sm"}>
@@ -91,7 +110,7 @@
                                    variant="standard"
                         />
 
-                        <Button onClick={() => handleLogin(email, password)} disabled={loading}  >Login</Button>
+                        <Button onClick={onLogin} variant="contained" disabled={loading}>Login</Button>
                     </Stack>
                     : <Stack spacing={2}>
 
@@ -129,7 +148,7 @@
                                    variant="standard"
                         />
 
-                        <Button variant="contained" onClick={()=>handleRegister(email, password)} >Register</Button>
+                        <Button onClick={onRegister} variant="contained" disabled={loading}>Register</Button>
                     </Stack>
                 }
             </Container>

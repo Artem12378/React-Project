@@ -5,6 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { useState} from "react";
 import {useAppDispatch, useAppSelector} from "./store.ts";
 import {logOutUser, selectUser} from "../entities/User/model/store/userStore.ts";
+import {NavLink, useLocation, useNavigate} from "react-router";
 
 
 
@@ -15,9 +16,11 @@ const AppBar = () => {
     const dispatch = useAppDispatch();
 
     const [open, setOpen] = useState(false);
-    //const todos = useTodosStore((state) => state.todos);
-    //const unDoneTodos = todos.filter(el => !el.completed)
 
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const isAbout =location.pathname === '/about';
 
     const toggleDrawer = (openState: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
@@ -26,12 +29,22 @@ const AppBar = () => {
         setOpen(openState);
     };
 
-    const menuItems = ['Главная', 'О нас', 'Услуги', 'Выход'];
+    const menuItems = ['Profile', 'О нас', 'Услуги', 'Выход'];
+
+    const handleRedirectToProfile =() => {
+        navigate('/profile');
+        setOpen(false);
+    }
 
     const handleLogout = (text: string) => {
         if (text === 'Выход') {
             localStorage.removeItem('access_token');
             dispatch(logOutUser());  // вызываем logout только для "Выход"
+        }
+        setOpen(false);
+
+        if (text === 'Profile') {
+            handleRedirectToProfile()
         }
         setOpen(false);
     }
@@ -61,6 +74,9 @@ const AppBar = () => {
                     Todos{' '  } {/*unDoneTodos?.length*/ }
                 </Typography>
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                    <NavLink to={isAbout ? "/" : '/about'}>{isAbout ? 'Home' : 'About' }</NavLink>
+                </Typography>
+                <Typography variant="h6" component={"div"} sx={{ flexGrow: 3 }}>
                     My App
                 </Typography>
                 <div style={{ display: 'flex', gap: '10px' }}>
@@ -79,7 +95,9 @@ const AppBar = () => {
                         </Tooltip>
 
                         :
-                        <Button color="inherit">Login</Button>
+                        <Button color="inherit" onClick={()=>{
+                            navigate('/')
+                        }} >Login</Button>
                     }
 
                 </div>

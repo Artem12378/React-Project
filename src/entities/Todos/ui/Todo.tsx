@@ -72,7 +72,7 @@ export const Todo = ({todo,deleteTodo, changeTodoTitle, changeTodoDescription}: 
                 onClick={handlerDeleteTodo}
                 size="small"
             >
-                <DeleteIcon fontSize="small" onClick={handlerDeleteTodo}/>
+                <DeleteIcon fontSize="small" />
             </IconButton>
 
         <CardContent>
