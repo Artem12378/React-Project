@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {memo, useState} from "react";
 import {enqueueSnackbar} from "notistack";
 import {Button, Card, Checkbox} from "@mui/material";
 import CardContent from "@mui/material/CardContent";
@@ -10,6 +10,8 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useAppDispatch} from "../../../app/store.ts";
 import {changeTodoCompleted} from "../model/Store/todosStore.ts";
+import {updateCompletedApi} from "../api/todoApi.ts";
+import {NavLink} from "react-router";
 
 
 type TodoProps = {
@@ -19,7 +21,7 @@ type TodoProps = {
     changeTodoDescription: (todo: TodoType["id"], todoDescription: string) => void;
     deleteTodo:(id:TodoType['id']) => void;
 }
-export const Todo = ({todo,deleteTodo, changeTodoTitle, changeTodoDescription}: TodoProps) => {
+export const Todo = memo(({todo,deleteTodo, changeTodoTitle, changeTodoDescription}: TodoProps) => {
     const dispatch = useAppDispatch();
 
     const todoDataCreate = new Date(todo.createdAt).toLocaleString()
@@ -36,9 +38,9 @@ export const Todo = ({todo,deleteTodo, changeTodoTitle, changeTodoDescription}: 
     const [updateData, setUpdateData] = useState(todoDataUpdate);
 
 
-    const handleCheckClick = () => {
-        //setTodo({...todo, completed: !todo.completed})
-        dispatch(changeTodoCompleted({id:todo.id, completed:todo.completed}))
+    const handleCheckClick = async () =>  {
+        await updateCompletedApi({id:todo.id, completed:!todo.completed})
+        dispatch(changeTodoCompleted({id:todo.id, completed:!todo.completed}))
     }
 
     const handlerChangeTodoTitle = () => {
@@ -97,9 +99,11 @@ export const Todo = ({todo,deleteTodo, changeTodoTitle, changeTodoDescription}: 
                         fontSize: 14,
                         cursor: 'pointer'
                     }}
-                >
-                    {todo.title}
 
+                >
+
+
+                    <NavLink to={`/todo/${todo.id}`}> {todo.title}</NavLink>
                 </Typography>
             )}
 
@@ -139,4 +143,4 @@ export const Todo = ({todo,deleteTodo, changeTodoTitle, changeTodoDescription}: 
             {updateData}
         </Typography>
     </Card>
-    )}
+    )})

@@ -1,4 +1,4 @@
-import {Button, CircularProgress, Container, Input, Stack} from "@mui/material";
+import {CircularProgress, Container, Stack} from "@mui/material";
 import {Todo} from "./Todo";
 import {useCallback, useEffect, useState} from "react";
 //import type {TodoType} from "../model/todoType.ts";
@@ -10,12 +10,13 @@ import {
     updateTodosDescription,
     deleteTodo,
     setTodos,
-    addTodoToStore
+    addTodoToStore, selectFilter
 } from "../model/Store/todosStore.ts";
 import {addTodoApi, deleteTodoApi, getTodosApi, updateDescriptionApi, updateTitleApi} from "../api/todoApi.ts";
 import {useSnackbar} from "notistack";
 import {selectUser} from "../../User/model/store/userStore.ts";
 import type {ServerTodoType} from "../model/todoType.ts";
+import {AddTodoForm} from "./AddFormTodo.tsx";
 
 
 const Todos = () => {
@@ -28,12 +29,10 @@ const Todos = () => {
     const dispatch = useAppDispatch();
     const todos = useAppSelector(selectTodos);
     const user = useAppSelector(selectUser);
-
-    const [newTodoTitle, setNewTodoTitle] = useState("")
-    const [newTodoDescription, setNewTodoDescription] = useState("")
+    const filters = useAppSelector(selectFilter);
 
     const handleGetTodos = useCallback(async () => {
-        getTodosApi()
+        getTodosApi(filters)
             .then((response) => {
                 console.log('Response status:', response.status);
                 console.log('Response data:', response.data);
@@ -48,20 +47,15 @@ const Todos = () => {
                 dispatch(setTodos([]));   // ← пустой массив, а не объект
             })
             .finally(()=> {setIsLoading(false)});
-    },[dispatch, enqueueSnackbar])
+    },[dispatch, enqueueSnackbar, filters])
 
-    const handleAddTodo = async () => {
+    const handleAddTodo = async (title: string, description: string) => {
         if (!user?.access_token) return;
-        if (!newTodoTitle) return;
         setIsLoading(true);
-
         try {
-            const response = await addTodoApi({ title: newTodoTitle, description: newTodoDescription });
+            const response = await addTodoApi({ title, description });
             const newTodo = { ...response.data, id: response.data._id || response.data.id };
             dispatch(addTodoToStore(newTodo));
-
-            setNewTodoTitle('');
-            setNewTodoDescription('');
             enqueueSnackbar('Todo added', { variant: 'success' });
         } catch (e) {
             console.error(e);
@@ -105,21 +99,28 @@ const Todos = () => {
          handleGetTodos();
     },[handleGetTodos])
 
+
+    //
+    // const deleteTodoHandler = (todo:string)=>{
+    //     dispatch(deleteTodo({id:todo}))
+    // }
+
+    // const changeTodoTitle = (todoId:TodoType["id"],title:string) => {
+    //     dispatch(updateTodoTitle({id:todoId, title}));
+    // }
+
+    // const changeTodoDescription = (todoId: string, description: string) => {
+    //     dispatch(updateTodosDescription({ id: todoId, description }));
+    // };
+
+
     if(isLoading){
         return <CircularProgress />;
     }
 
     return (
         <Container>
-            <Input placeholder={'title'}
-                   onChange={(e) => setNewTodoTitle(e.target.value)}
-                   value={newTodoTitle}
-            />
-            <Input placeholder={'description'}
-                   onChange={(e) => setNewTodoDescription(e.target.value)}
-                   value={newTodoDescription}
-            />
-            <Button disabled={!newTodoTitle} onClick={handleAddTodo} >Add</Button>
+            <AddTodoForm onAddTodo={handleAddTodo} disabled={isLoading} />
 
             <Stack direction="row" spacing={2}>
 

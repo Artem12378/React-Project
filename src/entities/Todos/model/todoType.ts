@@ -22,3 +22,4 @@
     export type CreateTodoType = Pick<TodoType, 'title' | 'description'>
     export type updateTitleType = Pick<TodoType, 'id' | 'title'>
     export type updateDescriptionType = Pick<TodoType, 'id' | 'description'>
+    export type updateCompletedType = Pick<TodoType, 'id' | 'completed'>

@@ -16,6 +16,7 @@ import {SnackbarProvider} from "notistack";
 import { selectUser,} from "../entities/User/model/store/userStore.ts";
 import {useAppSelector} from "./store.ts";
 import {Navigate} from "react-router";
+import TodosFilters from "../entities/Todos/ui/TodosFilters.tsx";
 
 
 
@@ -45,6 +46,7 @@ function App() {
                     {mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
                 </IconButton>
                 <Box sx={{ marginTop: '100px' }}></Box>
+                <TodosFilters/>
                 <Todos/>
             </>
         </SnackbarProvider>
